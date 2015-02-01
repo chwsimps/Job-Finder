@@ -15,6 +15,11 @@ angular.module('angAuthApp').config(function($urlRouterProvider, $stateProvider)
       url: '/register',
       templateUrl: '/views/register.html',
       controller: 'RegisterCtrl'
+    })
+
+    .state('logout', {
+      url: '/logout',
+      controller: 'LogoutCtrl'
     });
 
 });

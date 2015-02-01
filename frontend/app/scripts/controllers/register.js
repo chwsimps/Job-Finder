@@ -18,5 +18,5 @@ angular.module('angAuthApp')
         .error(function(err) {
           alert('warning', 'Oops!', ' Could not register');
         });
-    }
+    };
   });

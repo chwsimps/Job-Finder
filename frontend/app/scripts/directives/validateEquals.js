@@ -14,7 +14,7 @@ angular.module('angAuthApp').directive('validateEquals', function () {
 
         scope.$watch(attrs.validateEquals, function () {
           ngModelCtrl.$setViewValue(ngModelCtrl.$viewValue);
-        })
+        });
       }
     };
   });
