@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angAuthApp').config(function($urlRouterProvider, $stateProvider) {
+angular.module('angAuthApp').config(function($urlRouterProvider, $stateProvider, $httpProvider) {
 
     $urlRouterProvider.otherwise('/');
 
@@ -17,9 +17,19 @@ angular.module('angAuthApp').config(function($urlRouterProvider, $stateProvider)
       controller: 'RegisterCtrl'
     })
 
+    .state('jobs', {
+      url: '/jobs',
+      templateUrl: '/views/jobs.html',
+      controller: 'JobsCtrl'
+    })
+
     .state('logout', {
       url: '/logout',
       controller: 'LogoutCtrl'
     });
 
-});
+    $httpProvider.interceptors.push('authInterceptor');
+
+})
+
+.constant('API_URL', 'http://localhost:3000/');

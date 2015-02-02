@@ -11,8 +11,9 @@ angular.module('angAuthApp').factory('authToken', function ($window) {
         storage.setItem('userToken', token);
       },
       getToken: function () {
-        if(!cachedToken)
+        if(!cachedToken) {
           cachedToken = storage.getItem(userToken);
+        }
 
         return cachedToken;
       },

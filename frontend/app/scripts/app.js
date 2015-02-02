@@ -1,4 +1,4 @@
 'use strict';
 
 angular
-  .module('angAuthApp', ['ui.router']);
+  .module('angAuthApp', ['ui.router', 'ngAnimate']);
