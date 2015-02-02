@@ -17,11 +17,13 @@ body {
 
 }
 /* Make the masthead heading the same height as the navigation */
-.header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
+.header h2 {
+  color: #DD6928;
   padding-bottom: 19px;
+}
+
+.header img {
+  width: 50px;
 }
 
 /* Custom page footer */
