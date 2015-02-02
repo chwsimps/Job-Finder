@@ -1,21 +1,14 @@
 'use strict';
 
-angular.module('angAuthApp').controller('LoginCtrl', function ($scope, $http, API_URL, alert, authToken) {
+angular.module('angAuthApp').controller('LoginCtrl', function ($scope, alert, auth) {
     $scope.submit = function () {
 
-      var url = API_URL + 'login';
-      var user = {
-        email: $scope.email,
-        password: $scope.password
-      };
-
-      $http.post(url, user)
-      .success(function(res) {
-        alert('success', 'Welcome', ' Thanks for coming back ' + res.user.email + '!');
-        authToken.setToken(res.token);
-      })
-      .error(function(err) {
-        alert('warning', 'Something went wrong', err.message);
-      });
+      auth.login($scope.email, $scope.password)
+        .success(function(res) {
+          alert('success', 'Welcome', ' Thanks for coming back ' + res.user.email + '!');
+        })
+        .error(function(err) {
+          alert('warning', 'Something went wrong', err.message);
+        });
     };
   });

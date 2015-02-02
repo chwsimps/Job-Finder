@@ -3,10 +3,17 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var User = require('./models/user.js');
 var jwt = require('jwt-simple');
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
 
 var app = express();
 
 app.use(bodyParser.json());
+app.use(passport.initialize());
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+})
 
 app.use(function (reg, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -16,44 +23,69 @@ app.use(function (reg, res, next) {
   next();
 })
 
-app.post('/register', function(req,res) {
-  var user = req.body;
+var strategyOptions = {
+  usernameField: 'email'
+};
 
-  var newUser = new User({
-    email: user.email,
-    password: user.password
-  })
+var loginStrategy = new LocalStrategy(strategyOptions, function (email, password, done) {
 
-  newUser.save(function(err) {
-    createSendToken(newUser, res);
-  })
+    var searchUser = {
+      email: email
+    };
 
-})
+    User.findOne(searchUser, function(err, user) {
+      if(err) return done (err);
 
-app.post('/login', function(req, res) {
-  req.user = req.body;
+        if(!user) return done(null, false, {
+          message: ' Wrong Email or Password'
+        });
+
+        user.comparePasswords(password, function(err, isMatch) {
+          if(err) return done (err);
+
+          if(!isMatch) return done(null, false, {
+            message: ' Wrong Email or Password'
+          });
+
+          return done(null, user);
+
+        });
+    })
+});
+
+var registerStrategy = new LocalStrategy(strategyOptions, function(email, password, done) {
 
   var searchUser = {
-    email: req.user.email
+    email: email
   };
 
   User.findOne(searchUser, function(err, user) {
-    if(err) throw err
+    if(err) return done (err);
 
-    if(!user) {
-      return res.status(401).send({message: ' Wrong Email or Password'});
-    }
+    if(user) return done(null, false, {
+      message: ' Email already exists'
+    });
 
-      user.comparePasswords(req.user.password, function(err, isMatch) {
-        if(err) throw err
+    var newUser = new User({
+      email: email,
+      password: password
+    })
 
-        if(!isMatch)
-          return res.status(401).send({message: ' Wrong Email or Password'});
+    newUser.save(function(err) {
+      done(null, newUser);
+    })
+  });
+});
 
-        createSendToken(user, res);
+passport.use('local-register', registerStrategy);
+passport.use('local-login', loginStrategy);
 
-      });
-  })
+app.post('/register', passport.authenticate('local-register'), function(req,res) {
+    createSendToken(req.user, res);
+})
+
+app.post('/login', passport.authenticate('local-login'), function(req, res) {
+    createSendToken(req.user, res);
 })
 
 function createSendToken(user, res) {
