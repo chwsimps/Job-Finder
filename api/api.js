@@ -19,26 +19,55 @@ app.use(function (reg, res, next) {
 app.post('/register', function(req,res) {
   var user = req.body;
 
-  var newUser = new User.model({
+  var newUser = new User({
     email: user.email,
     password: user.password
   })
 
+  newUser.save(function(err) {
+    createSendToken(newUser, res);
+  })
+
+})
+
+app.post('/login', function(req, res) {
+  req.user = req.body;
+
+  var searchUser = {
+    email: req.user.email
+  };
+
+  User.findOne(searchUser, function(err, user) {
+    if(err) throw err
+
+    if(!user) {
+      return res.status(401).send({message: ' Wrong Email or Password'});
+    }
+
+      user.comparePasswords(req.user.password, function(err, isMatch) {
+        if(err) throw err
+
+        if(!isMatch)
+          return res.status(401).send({message: ' Wrong Email or Password'});
+
+        createSendToken(user, res);
+
+      });
+  })
+})
+
+function createSendToken(user, res) {
   var payload = {
-    iss: req.hostname, //issuer(who created payload)
-    sub: newUser.id //subject
+    sub: user.id //subject
   }
 
   var token = jwt.encode(payload, "shhh..");
 
-  newUser.save(function(err) {
-    res.status(200).send({
-      user: newUser.toJSON(),
-      token: token
-    });
-  })
-
-})
+  res.status(200).send({
+    user: user.toJSON(),
+    token: token
+  });
+}
 
 var jobs = [
   'Cook',
