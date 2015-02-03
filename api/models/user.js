@@ -3,7 +3,9 @@ var bcrypt = require('bcrypt-nodejs');
 
 var UserSchema = new mongoose.Schema({
   email: String,
-  password: String
+  password: String,
+  googleId: String,
+  displayName: String
 });
 
 // Hide User Password
