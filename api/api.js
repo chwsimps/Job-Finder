@@ -8,7 +8,10 @@ var facebookAuth = require('./services/facebookAuth.js');
 var createSendToken = require('./services/jwt.js');
 var LocalStrategy = require('./services/localStrategy.js');
 var jobs = require('./services/jobs.js');
+var emailVerification = require('./services/emailVerification.js');
+
 var app = express();
+
 
 app.use(bodyParser.json());
 app.use(passport.initialize());
@@ -31,12 +34,13 @@ passport.use('local-register', LocalStrategy.register);
 passport.use('local-login', LocalStrategy.login);
 
 app.post('/register', passport.authenticate('local-register'), function(req,res) {
+    emailVerification.send(req.user.email);
     createSendToken(req.user, res);
-})
+});
 
 app.post('/login', passport.authenticate('local-login'), function(req, res) {
     createSendToken(req.user, res);
-})
+});
 
 app.post('/auth/facebook', facebookAuth);
 
