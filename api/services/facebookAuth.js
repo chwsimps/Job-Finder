@@ -12,7 +12,7 @@ module.exports = function(req, res) {
     client_id: req.body.clientId,
     redirect_uri: req.body.redirectUri,
     client_secret: config.FACEBOOK_SECRET,
-    code: req.bodycode
+    code: req.body.code
   };
 
   request.get({
@@ -30,10 +30,10 @@ module.exports = function(req, res) {
         facebookId: profile.id
       }, function(err, existingUser) {
         if(existingUser)
-          return creatSendToken(existingUser, res);
+          return createSendToken(existingUser, res);
 
         var newUser = new User();
-          newUser.facebookId = profile.id;
+          newUser.facebookId = profile.sub;
           newUser.displayName = profile.name;
           newUser.save(function(err) {
             createSendToken(newUser, res);

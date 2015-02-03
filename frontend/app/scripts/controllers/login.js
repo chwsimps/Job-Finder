@@ -2,8 +2,10 @@
 
 angular.module('angAuthApp').controller('LoginCtrl', function ($scope, alert, auth, $auth) {
     $scope.submit = function () {
-      auth.login($scope.email,$scope.password)
-        .success(function(res) {
+      $auth.login({
+        email: $scope.email,
+        password: $scope.password
+      }).then(function(res) {
           alert('success', 'Welcome', ' Thanks for coming back ' + res.data.user.email + '!');
         }).catch(handleError);
     };
@@ -15,6 +17,6 @@ angular.module('angAuthApp').controller('LoginCtrl', function ($scope, alert, au
     };
 
     function handleError(err) {
-      alert('warning', 'Something went wrong', err.message);
+      alert('warning', ' Something went wrong ', err.message);
     }
 });
