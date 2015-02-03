@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('angAuthApp').controller('LogoutCtrl', function (authToken, $state) {
-    authToken.removeToken();
+angular.module('angAuthApp').controller('LogoutCtrl', function ($auth, $state) {
+    $auth.logout();
     $state.go('main');
   });

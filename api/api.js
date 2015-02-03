@@ -6,6 +6,8 @@ var jwt = require('jwt-simple');
 var passport = require('passport');
 var LocalStrategy = require('passport-local');
 var request = require('request');
+var facebookAuth = require('./services/facebookAuth.js');
+var createSendToken = require('./services/jwt.js');
 
 var app = express();
 
@@ -16,7 +18,7 @@ passport.serializeUser(function (user, done) {
   done(null, user.id);
 })
 
-app.use(function (reg, res, next) {
+app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, PUT, POST, DELETE');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -89,18 +91,7 @@ app.post('/login', passport.authenticate('local-login'), function(req, res) {
     createSendToken(req.user, res);
 })
 
-function createSendToken(user, res) {
-  var payload = {
-    sub: user.id //subject
-  }
-
-  var token = jwt.encode(payload, "shhh..");
-
-  res.status(200).send({
-    user: user.toJSON(),
-    token: token
-  });
-}
+app.post('/auth/facebook', facebookAuth);
 
 var jobs = [
   'Cook',
