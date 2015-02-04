@@ -34,8 +34,8 @@ angular.module('angAuthApp').config(function($urlRouterProvider, $stateProvider,
       controller: 'LogoutCtrl'
     });
 
-    $authProvider.loginUrl = API_URL + 'login';
-    $authProvider.signupUrl = API_URL + 'register';
+    $authProvider.loginUrl = API_URL + 'login'; //auth/login for sails
+    $authProvider.signupUrl = API_URL + 'register'; //auth/register
 
     $authProvider.facebook({
       clientId: '402860839886204',
