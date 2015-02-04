@@ -11,6 +11,10 @@ module.exports = {
     title: {
       type: 'string',
       required: true
+    },
+    company: {
+      type: 'string',
+      required: true
     }
   }
 };
